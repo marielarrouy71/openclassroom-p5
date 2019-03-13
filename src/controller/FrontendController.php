@@ -20,7 +20,7 @@ class FrontendController
      private $userDao;
     private $authenticationService;
     private $twig;
-    
+
 
     public function __construct($twig)
     {
@@ -42,13 +42,16 @@ class FrontendController
     public function detailEvenement($evenementId)
     {
 
+        /** @var Evenement $evenement */
         $evenement = $this->evenementDao->findById($evenementId);
+        $dateCloture = date_sub(date_create($evenement->getDateDebut()), new \DateInterval('P3D'));
 
-        echo $this->twig->render('detail.html.twig', array('evenement' => $evenement));
+        return $this->twig->render('detail.html.twig',
+            array('evenement' => $evenement, 'dateCloture' => $dateCloture));
     }
 
     public function inscriptionEvenement($evenementId, $formData) {
-      
+
         $participant=new Participant();
         $participant->setNom($formData->get("nom"));
         $participant->setPrenom($formData->get("prenom"));
@@ -58,43 +61,43 @@ class FrontendController
         $participant->setMail($formData->get("mail"));
         $participant->setProfession($formData->get("profession"));
         $participant->setLieuTravail($formData->get("lieu_travail"));
-                
+
      $participantId= $this->participantDao->create($participant);
-      
+
         $this->evenementDao->addParticipant($evenementId,$participantId);
        header("Location: /");
         die();
     }
 
       public function reviewEvenement($evenementId, $data) {
-       
+
            $review = $this->reviewDao->findById($evenementId, $data);
          echo $this->twig->render('review.html.twig', array('evenement' => $evenement));
-          
-        
+
+
     }
-    
+
      public function docEvenement($evenementId) {
-       
+
           $evenement = $this->evenementDao->findById($evenementId);
 
-        echo $this->twig->render('doc.html.twig', array('evenement' => $evenement));         
-        
-          
-        
+        echo $this->twig->render('doc.html.twig', array('evenement' => $evenement));
+
+
+
     }
-    
+
      public function inscriptionEvenementDisplay($evenementId) {
-       
+
           $evenement = $this->evenementDao->findById($evenementId);
 
         echo $this->twig->render('inscription.html.twig',array('evenement' => $evenement));
-         
-        
-          
-        
+
+
+
+
     }
-    
+
      public function evenements()
     {
 
@@ -102,7 +105,7 @@ class FrontendController
 
         echo $this->twig->render('evenements.html.twig', array('evenements' => $evenements));
     }
-    
+
      public function loginDisplay()
     {
         echo $this->twig->render('login.html.twig');

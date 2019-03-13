@@ -12,15 +12,10 @@
 
     <h1> {{ evenement.nom }}</h1>
 
-    <form method="post" action="/updateEvenement/{{evenement.id}}">
+    <form method="post" action="/updateEvenement/{{evenement.id}}" enctype="multipart/form-data">
         <div class="form-group">
             <label for="nom"> Nom </label>
             <input class="form-control" name="nom" id="nom" value="{{evenement.nom}}" />
-        </div>
-
-        <div class="form-group">
-            <label for="date_creation"> Date de création </label>
-            <input class="form-control" name="date_creation" id="date_creation" type="date" value="{{evenement.dateCreation}}" />
         </div>
 
         <div class="form-group">
@@ -46,6 +41,9 @@
  <div class="form-group">
             <label for="doc">Documents à joindre</label>
             <input class="form-control" name="doc" id="doc" type="file">
+           {% if evenement.doc is not null %}
+             <a href="{{ evenement.doc }}" target="_blank">Voir le document existant</a>
+           {% endif %}
         </div>
 
         <button type="submit">Valider</button>

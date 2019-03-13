@@ -18,8 +18,8 @@ class EvenementDao extends BaseDao
     public function findAll()
     {
         $query = $this->db->prepare("SELECT e.*, ep.participant_id 
-FROM evenement e 
-LEFT JOIN evenement_participant ep ON ep.evenement_id = e.id");
+                                        FROM evenement e 
+                                        LEFT JOIN evenement_participant ep ON ep.evenement_id = e.id");
         $query->execute();
         /** @var array<App\Model\Evenement> $evenements */
         $evenements = $query->fetchAll(\PDO::FETCH_CLASS, 'App\Model\Evenement');
@@ -81,9 +81,11 @@ WHERE e.id=?");
             $evenement->getLieu(),
             $evenement->getDateDebut(),
             $evenement->getDateFin(),
-             $evenement->getContent(),
-             $evenement->getDoc(),
+            $evenement->getContent(),
+            $evenement->getDoc(),
         ]);
+
+        var_dump($query->errorInfo());
         return $res;
     }
 
@@ -104,15 +106,14 @@ WHERE e.id=?");
           WHERE id=?");
 
 
-
         $res = $query->execute([
             $evenement->getNom(),
             $evenement->getLieu(),
             $evenement->getDateDebut(),
             $evenement->getDateFin(),
-             $evenement->getContent(),
+            $evenement->getContent(),
+            $evenement->getDoc(),
             $evenement->getId(),
-             $evenement->getDoc(),
         ]);
 
         var_dump($query->errorInfo());
@@ -121,12 +122,13 @@ WHERE e.id=?");
     }
 
     public function delete($evenementId)
-
     {
 
-        $query = $this->db->prepare("delete from evenement where id=? ");
+        $query = $this->db->prepare("delete from evenement where id=?");
+        $queryParticipants = $this->db->prepare("delete from evenement_participant where evenement_id=?");
 
-        return $query->execute(array($evenementId));
+        $query->execute(array($evenementId));
+        $queryParticipants->execute(array($evenementId));
 
     }
 
